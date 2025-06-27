@@ -5,7 +5,7 @@ import { TUser } from './user.interface'
 import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary'
 import { User } from './user.model'
 import AppError from '../../errors/AppError'
-import httpStatus from 'http-status';
+import httpStatus from 'http-status'
 import { Patient } from '../patient/patient.model'
 
 // Patient  Creat Function
@@ -14,53 +14,51 @@ const createPatientIntoDB = async (
   password: string,
   payload: TPatient
 ) => {
-  // create a user object
-  const userData: Partial<TUser> = {}
+  const userData: Partial<TUser> = {
+    password,
+    role: 'patient',
+    email: payload.email
+  };
 
-  //Patient Password set
-  userData.password = password
-
-  //set Patient role
-  userData.role = 'patient'
-
-  const session = await mongoose.startSession()
+  const session = await mongoose.startSession();
 
   try {
-    session.startTransaction()
+    session.startTransaction();
+
+    // Create user
+    const newUser = await User.create([userData], { session });
+    if (!newUser.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
+    }
+
+    // Assign user reference (with proper type)
+    payload.user = newUser[0]._id as unknown as mongoose.Types.ObjectId;
 
     if (file) {
-      const imageName = `${userData._id}${userData?.name}`
-      const path = file?.path
-      //send image to cloudinary
-      const { secure_url } = await sendImageToCloudinary(imageName, path)
-      payload.profileImg = secure_url as string
+      const imageName = `${newUser[0]._id}${payload?.name}`;
+      const path = file?.path;
+      const { secure_url } = await sendImageToCloudinary(imageName, path);
+      payload.profileImg = secure_url as string;
     }
 
-    // create a user (transaction-1)
-    const newUser = await User.create([userData], { session })
-
-    //create Patient
-    if (!newUser.length) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user')
-    }
-
-    // create a admin (transaction-2)
-    const newPatient = await Patient.create([payload], { session })
+    // Create patient
+    const newPatient = await Patient.create([payload], { session });
 
     if (!newPatient.length) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create patient')
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create patient');
     }
+    
 
-    await session.commitTransaction()
-    await session.endSession()
+    await session.commitTransaction();
+    await session.endSession();
 
-    return newPatient
+    return newPatient;
   } catch (err: any) {
-    await session.abortTransaction()
-    await session.endSession()
-    throw new Error(err)
+    await session.abortTransaction();
+    await session.endSession();
+    throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, err.message);
   }
-}
+};
 
 export const UserServices = {
   createPatientIntoDB,
