@@ -39,4 +39,4 @@ const studentSchema = new Schema<TPatient, PatientModel>(
 )
 
 
-export const Student = model<TPatient, PatientModel>('Patient', studentSchema);
+export const Patient = model<TPatient, PatientModel>('Patient', studentSchema);

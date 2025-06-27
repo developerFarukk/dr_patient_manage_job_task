@@ -6,9 +6,10 @@ import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary'
 import { User } from './user.model'
 import AppError from '../../errors/AppError'
 import httpStatus from 'http-status';
+import { Patient } from '../patient/patient.model'
 
 // Patient  Creat Function
-const createAdminIntoDB = async (
+const createPatientIntoDB = async (
   file: any,
   password: string,
   payload: TPatient
@@ -62,5 +63,5 @@ const createAdminIntoDB = async (
 }
 
 export const UserServices = {
-  createAdminIntoDB,
+  createPatientIntoDB,
 }
