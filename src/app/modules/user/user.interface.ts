@@ -15,7 +15,7 @@ export interface TUser {
 export interface UserModel extends Model<TUser> {
 
   //instance methods for checking if the user exist
-  isUserExistsByCustomId(_id: string): Promise<TUser>;
+  isUserExistsById(_id: string): Promise<TUser>;
 
   //instance methods for checking if passwords are matched
   isPasswordMatched(
