@@ -2,7 +2,7 @@
 import mongoose from 'mongoose'
 import httpStatus from 'http-status'
 import { TPatient } from '../patient/patient.interface'
-import { TUser } from '../user/user.interface'
+import { TUser, UserRole } from '../user/user.interface'
 import AppError from '../../errors/AppError'
 import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary'
 import { Patient } from '../patient/patient.model'
@@ -12,6 +12,7 @@ import { Doctor } from '../doctor/doctor.model'
 import { TLoginUser } from './auth.interface'
 import config from '../../config'
 import { createToken } from './auth.utils'
+import { USER_ROLE } from '../user/user.constant'
 
 
 // Patient  Creat Function
@@ -22,7 +23,7 @@ const createPatientIntoDB = async (
 ) => {
   const userData: Partial<TUser> = {
     password,
-    role: 'patient',
+    role: USER_ROLE.patient as UserRole,
     email: payload.email,
   }
 
@@ -74,7 +75,7 @@ const createDoctortIntoDB = async (
 ) => {
   const userData: Partial<TUser> = {
     password,
-    role: 'doctor',
+    role: USER_ROLE.doctor as UserRole,
     email: payload.email,
   }
 

@@ -1,5 +1,5 @@
 
-
+export type UserRole = 'patient' | 'admin' | 'doctor';
 export const USER_ROLE = {
     patient: 'patient',
     doctor: 'doctor',

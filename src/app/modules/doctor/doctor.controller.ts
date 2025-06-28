@@ -4,15 +4,14 @@ import { DoctorServices } from "./doctor.service"
 import httpStatus from 'http-status'
 
 
-// Patient Create Funtionality
+// Service Create Funtionality
 const createService = catchAsync(async (req, res) => {
-  // const {  patient: patientData } = req.body
-
+  
   const { userEmail } = req.user;
-
+ 
   const result = await DoctorServices.createDoctorServiceIntoDB(
-    // patientData
-    userEmail
+    userEmail,
+    req.body
   )
 
   sendResponse(res, {
