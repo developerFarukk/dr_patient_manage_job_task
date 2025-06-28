@@ -36,13 +36,11 @@ const createDoctorServiceIntoDB = async (
   return service
 }
 
-
 // Create Avilebility
 const setAvailabilityIntoDB = async (
   userEmail: string,
   payload: TAvailability
 ) => {
-  
   // Check User exixtse
   const user = await User.isUserExistsById(userEmail)
   const doctorId = user?._id
@@ -52,7 +50,7 @@ const setAvailabilityIntoDB = async (
   }
 
   // Check if the service belongs to the doctor
-   const serviceExists = await Service.findById(payload?.service)
+  const serviceExists = await Service.findById(payload?.service)
 
   if (!serviceExists) {
     throw new AppError(httpStatus.FORBIDDEN, 'Service does not belong to you')
@@ -117,10 +115,40 @@ const updateServiceIntoDB = async (id: string, payload: Partial<TService>) => {
   return result
 }
 
+// Update Avilability
+const updateAvailabilityIntoDB = async (
+  id: string,
+  payload: Partial<TAvailability>,
+) => {
+  
+  
+  const serviceId = await Service.findById(payload?.service)
+
+  if (!serviceId) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This service id is not found !!!')
+  }
+
+  const availability = await Availability.findOneAndUpdate(
+    { _id: id },
+    payload,
+    { new: true }
+  )
+
+  if (!availability) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'Availability not found or unauthorized'
+    )
+  }
+
+  return availability
+}
+
 export const DoctorServices = {
   createDoctorServiceIntoDB,
   getAllDoctorServiceFromDB,
   updateServiceIntoDB,
   deleteServiceFromDB,
-  setAvailabilityIntoDB
+  setAvailabilityIntoDB,
+  updateAvailabilityIntoDB,
 }

@@ -17,7 +17,7 @@ router.post(
 )
 
 // Create Avilabity route
-router.post('/', auth(USER_ROLE.doctor, USER_ROLE.admin), DocorControllers.setAvailability)
+router.post('/avilability', auth(USER_ROLE.doctor, USER_ROLE.admin), DocorControllers.setAvailability)
 
 // all service get Route
 router.get(
@@ -38,6 +38,13 @@ router.patch(
   '/services/:id',
   auth(USER_ROLE.admin, USER_ROLE.doctor),
   DocorControllers.updateService
+)
+
+// Update Avilability get Route
+router.patch(
+  '/avilability/:id',
+  auth(USER_ROLE.admin, USER_ROLE.doctor),
+  DocorControllers.updateAvailability
 )
 
 export const DoctorRoutes = router

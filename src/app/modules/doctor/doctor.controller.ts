@@ -88,10 +88,27 @@ const updateService = catchAsync(async (req, res) => {
 })
 
 
+// Update Avilability
+const updateAvailability = catchAsync(async (req, res) => {
+  
+ const { id } = req.params;
+ 
+  const result = await DoctorServices.updateAvailabilityIntoDB( id, req.body  )
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Update Avilability  succesfully',
+    data: result,
+  })
+})
+
+
 export const DocorControllers = {
   createService,
   getAlleService,
   updateService,
   deleteService,
-  setAvailability
+  setAvailability,
+  updateAvailability
 }
