@@ -6,10 +6,13 @@ import httpStatus from 'http-status'
 
 // Patient Create Funtionality
 const createService = catchAsync(async (req, res) => {
-  const {  patient: patientData } = req.body
+  // const {  patient: patientData } = req.body
+
+  const { userEmail } = req.user;
 
   const result = await DoctorServices.createDoctorServiceIntoDB(
-    patientData
+    // patientData
+    userEmail
   )
 
   sendResponse(res, {

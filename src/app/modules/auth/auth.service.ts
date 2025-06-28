@@ -127,9 +127,8 @@ const loginUser = async (payload: TLoginUser) => {
     // console.log(isUserExists);
 
     if (!user) {
-        throw new AppError(httpStatus.NOT_FOUND, 'This user email is not found !');
+        throw new AppError(httpStatus.NOT_FOUND, 'This user email is not found !!!');
     }
-
 
     // checking if the user is blocked
     const userStatus = user?.status;
