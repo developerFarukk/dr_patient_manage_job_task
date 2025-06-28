@@ -5,6 +5,7 @@ import validateRequest from '../../middlewares/validateRequest';
 import { createPatientValidationSchema } from '../patient/patient.validation';
 import { AuthControllers } from './auth.controller';
 import { createDoctorValidationSchema } from '../doctor/doctor.validation';
+import { AuthValidation } from './auth.validation';
 
 
 
@@ -33,6 +34,14 @@ router.post(
   },
   validateRequest(createDoctorValidationSchema),
   AuthControllers.createDoctor,
+);
+
+
+// Login User Route
+router.post(
+    '/login',
+    validateRequest(AuthValidation.loginZodSchema),
+    AuthControllers.loginUser,
 );
 
 

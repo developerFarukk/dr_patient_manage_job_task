@@ -9,6 +9,9 @@ import { Patient } from '../patient/patient.model'
 import { User } from '../user/user.model'
 import { TDoctor } from '../doctor/doctor.interface'
 import { Doctor } from '../doctor/doctor.model'
+import { TLoginUser } from './auth.interface'
+import config from '../../config'
+import { createToken } from './auth.utils'
 
 
 // Patient  Creat Function
@@ -114,7 +117,52 @@ const createDoctortIntoDB = async (
   }
 }
 
+
+// LogIn User Function
+const loginUser = async (payload: TLoginUser) => {
+
+    // Check User exixtse
+    const user = await User.isUserExistsById(payload.email);
+
+    // console.log(isUserExists);
+
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, 'This user email is not found !');
+    }
+
+
+    // checking if the user is blocked
+    const userStatus = user?.status;
+
+    if (userStatus === 'blocked') {
+        throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked ! !');
+    }
+
+    //checking if the password is correct
+    if (!(await User.isPasswordMatched(payload?.password, user?.password)))
+        throw new AppError(httpStatus.FORBIDDEN, 'Password do not matched');
+
+
+    const jwtPayload = {
+        userEmail: user.email,
+        role: user.role,
+    };
+
+    const accessToken = createToken(
+        jwtPayload,
+        config.jwt_access_secret as string,
+        config.jwt_access_expires_in as string,
+    );
+
+
+    return {
+        accessToken,
+    };
+
+};
+
 export const AuthServices = {
   createPatientIntoDB,
-  createDoctortIntoDB
+  createDoctortIntoDB,
+  loginUser
 }

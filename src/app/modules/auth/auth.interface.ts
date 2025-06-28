@@ -1,7 +1,15 @@
+import { UserRole } from "../user/user.interface";
 
 
 
 export type TLoginUser = {
-    id: string;
+    email: string;
     password: string;
 };
+
+
+export interface TJwtPayload {
+    userEmail: string;
+    role: UserRole;
+
+}
