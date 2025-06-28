@@ -86,6 +86,27 @@ const getAllDoctorServiceFromDB = async (query: Record<string, unknown>) => {
   }
 }
 
+// get Doctor Avilability
+const getDoctorAvailabilityFromDB = async (userEmail: string) => {
+  // Check User exixtse
+  const user = await User.isUserExistsById(userEmail)
+  const doctorId = user?._id
+
+  if (!doctorId) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This user id is not found !!!')
+  }
+
+  const availability = await Availability.find({ doctor: doctorId })
+    .populate('service')
+    .select('-__v')
+
+  if (!availability.length) {
+    throw new AppError(httpStatus.NOT_FOUND, 'No availability found')
+  }
+
+  return availability
+}
+
 // Delete Service Data
 const deleteServiceFromDB = async (id: string) => {
   // Check service exixtse
@@ -118,10 +139,8 @@ const updateServiceIntoDB = async (id: string, payload: Partial<TService>) => {
 // Update Avilability
 const updateAvailabilityIntoDB = async (
   id: string,
-  payload: Partial<TAvailability>,
+  payload: Partial<TAvailability>
 ) => {
-  
-  
   const serviceId = await Service.findById(payload?.service)
 
   if (!serviceId) {
@@ -151,4 +170,5 @@ export const DoctorServices = {
   deleteServiceFromDB,
   setAvailabilityIntoDB,
   updateAvailabilityIntoDB,
+  getDoctorAvailabilityFromDB,
 }

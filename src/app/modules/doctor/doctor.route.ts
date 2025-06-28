@@ -26,6 +26,14 @@ router.get(
   DocorControllers.getAlleService
 )
 
+
+// all Avilability get Route
+router.get(
+  '/avilability',
+  auth(USER_ROLE.admin, USER_ROLE.doctor),
+  DocorControllers.getDoctorAvailability
+)
+
 // delete service get Route
 router.delete(
   '/services/:id',

@@ -1,15 +1,12 @@
-import catchAsync from "../../utils/catchAsync"
-import sendResponse from "../../utils/sendResponse"
-import { DoctorServices } from "./doctor.service"
+import catchAsync from '../../utils/catchAsync'
+import sendResponse from '../../utils/sendResponse'
+import { DoctorServices } from './doctor.service'
 import httpStatus from 'http-status'
-
 
 // Service Create Funtionality
 const createService = catchAsync(async (req, res) => {
-  
-  const { userEmail } = req.user;
-  
- 
+  const { userEmail } = req.user
+
   const result = await DoctorServices.createDoctorServiceIntoDB(
     userEmail,
     req.body
@@ -23,29 +20,22 @@ const createService = catchAsync(async (req, res) => {
   })
 })
 
-
 // Create Avilibity
 const setAvailability = catchAsync(async (req, res) => {
-  const { userEmail } = req.user;
-  const result = await DoctorServices.setAvailabilityIntoDB(
-    userEmail,
-    req.body
-  );
+  const { userEmail } = req.user
+  const result = await DoctorServices.setAvailabilityIntoDB(userEmail, req.body)
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
     message: 'Availability set successfully',
     data: result,
-  });
-});
-
+  })
+})
 
 // all doctor Service data
 const getAlleService = catchAsync(async (req, res) => {
-  
- 
-  const result = await DoctorServices.getAllDoctorServiceFromDB( req.query  )
+  const result = await DoctorServices.getAllDoctorServiceFromDB(req.query)
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -55,13 +45,26 @@ const getAlleService = catchAsync(async (req, res) => {
   })
 })
 
+// get Doctor Avilability
+const getDoctorAvailability = catchAsync(async (req, res) => {
+  const { userEmail } = req.user
+
+  const result =
+    await DoctorServices.getDoctorAvailabilityFromDB(userEmail)
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Availability retrieved successfully',
+    data: result,
+  })
+})
 
 // Update doctor Service data
 const deleteService = catchAsync(async (req, res) => {
-  
- const { id } = req.params;
- 
-  const result = await DoctorServices.deleteServiceFromDB( id  )
+  const { id } = req.params
+
+  const result = await DoctorServices.deleteServiceFromDB(id)
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -71,13 +74,11 @@ const deleteService = catchAsync(async (req, res) => {
   })
 })
 
-
 // Update doctor Service data
 const updateService = catchAsync(async (req, res) => {
-  
- const { id } = req.params;
- 
-  const result = await DoctorServices.updateServiceIntoDB( id, req.body  )
+  const { id } = req.params
+
+  const result = await DoctorServices.updateServiceIntoDB(id, req.body)
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -87,13 +88,11 @@ const updateService = catchAsync(async (req, res) => {
   })
 })
 
-
 // Update Avilability
 const updateAvailability = catchAsync(async (req, res) => {
-  
- const { id } = req.params;
- 
-  const result = await DoctorServices.updateAvailabilityIntoDB( id, req.body  )
+  const { id } = req.params
+
+  const result = await DoctorServices.updateAvailabilityIntoDB(id, req.body)
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -103,12 +102,12 @@ const updateAvailability = catchAsync(async (req, res) => {
   })
 })
 
-
 export const DocorControllers = {
   createService,
   getAlleService,
   updateService,
   deleteService,
   setAvailability,
-  updateAvailability
+  updateAvailability,
+  getDoctorAvailability,
 }
