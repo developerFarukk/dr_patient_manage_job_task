@@ -4,6 +4,7 @@ import { upload } from '../../utils/sendImageToCloudinary';
 import validateRequest from '../../middlewares/validateRequest';
 import { createPatientValidationSchema } from '../patient/patient.validation';
 import { AuthControllers } from './auth.controller';
+import { createDoctorValidationSchema } from '../doctor/doctor.validation';
 
 
 
@@ -19,6 +20,19 @@ router.post(
   },
   validateRequest(createPatientValidationSchema),
   AuthControllers.createPatient,
+);
+
+
+// Doctor registation Route
+router.post(
+  '/register-doctor',
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
+  validateRequest(createDoctorValidationSchema),
+  AuthControllers.createDoctor,
 );
 
 
