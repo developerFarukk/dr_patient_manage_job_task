@@ -39,6 +39,22 @@ const getAlleService = catchAsync(async (req, res) => {
 
 
 // Update doctor Service data
+const deleteService = catchAsync(async (req, res) => {
+  
+ const { id } = req.params;
+ 
+  const result = await DoctorServices.deleteServiceFromDB( id  )
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Delete Service  succesfully',
+    data: result,
+  })
+})
+
+
+// Update doctor Service data
 const updateService = catchAsync(async (req, res) => {
   
  const { id } = req.params;
@@ -57,5 +73,6 @@ const updateService = catchAsync(async (req, res) => {
 export const DocorControllers = {
   createService,
   getAlleService,
-  updateService
+  updateService,
+  deleteService
 }

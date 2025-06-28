@@ -11,7 +11,7 @@ const router = express.Router();
 
 // Service Creat Route
 router.post(
-  '/service',
+  '/services',
   auth(USER_ROLE.admin, USER_ROLE.doctor),
   validateRequest(doctorServiceValidationSchema),
   DocorControllers.createService,
@@ -25,9 +25,17 @@ router.get(
 );
 
 
+// delete service get Route
+router.delete(
+  '/services/:id',
+  auth(USER_ROLE.admin, USER_ROLE.doctor),
+  DocorControllers.deleteService,
+);
+
+
 // Update service get Route
 router.patch(
-  '/service/:id',
+  '/services/:id',
   auth(USER_ROLE.admin, USER_ROLE.doctor),
   DocorControllers.updateService,
 );

@@ -38,7 +38,7 @@ const createDoctorServiceIntoDB = async (
 const getAllDoctorServiceFromDB = async (query: Record<string, unknown>) => {
   const doctorServiceQuery = new QueryBuilder(
     Service.find(),
-      // .populate('doctor'),
+    // .populate('doctor'),
     query
   )
     .search(ServiceSearchableFields)
@@ -56,27 +56,38 @@ const getAllDoctorServiceFromDB = async (query: Record<string, unknown>) => {
   }
 }
 
+// Delete Service Data
+const deleteServiceFromDB = async (id: string) => {
+  // Check service exixtse
+  const serviceId = await Service.findById(id)
+
+  if (!serviceId) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This service id is not found !!!')
+  }
+
+  const result = await Service.findByIdAndDelete(id)
+  return result
+}
 
 // Update Service Data
-const updateServiceIntoDB = async (
-    id: string,
-    payload: Partial<TService>,
-) => {
-  
-    const result = await Service.findOneAndUpdate(
-        { _id: id },
-        payload,
-        {
-            new: true,
-        },
-    );
-    
-    return result;
-};
+const updateServiceIntoDB = async (id: string, payload: Partial<TService>) => {
+  // Check service exixtse
+  const serviceId = await Service.findById(id)
 
+  if (!serviceId) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This service id is not found !!!')
+  }
+
+  const result = await Service.findOneAndUpdate({ _id: id }, payload, {
+    new: true,
+  })
+
+  return result
+}
 
 export const DoctorServices = {
   createDoctorServiceIntoDB,
   getAllDoctorServiceFromDB,
-  updateServiceIntoDB
+  updateServiceIntoDB,
+  deleteServiceFromDB,
 }
