@@ -1,7 +1,8 @@
-import { model, Schema } from 'mongoose'
-import { PatientModel, TPatient } from './patient.interface'
+import { model, Schema } from "mongoose";
+import { DoctorModel, TDoctor } from "./doctor.interface";
 
-const patientSchema = new Schema<TPatient, PatientModel>(
+
+const doctorSchema = new Schema<TDoctor, DoctorModel>(
   {
     user: {
       type: Schema.Types.ObjectId,
@@ -35,13 +36,24 @@ const patientSchema = new Schema<TPatient, PatientModel>(
         values: ['male', 'female', 'other'],
         message: '{VALUE} is not a valid gender',
       },
-      required: [true, 'Gender is required'],
     },
-    age: {
-      type: Number,
+    specialization: {
+      type: String,
       trim: true,
-      required: [true, 'age is required'],
-      minlength: [0, 'Please inpute valid age'],
+      required: [true, 'Specialization is required'],
+      minlength: [3, 'Specialization can not be more than 3 characters'],
+    },
+    hospitalName: {
+      type: String,
+      trim: true,
+      required: [true, 'Specialization is required'],
+      minlength: [3, 'Specialization can not be more than 3 characters'],
+    },
+    hospitalFloor: {
+      type: String,
+      trim: true,
+      required: [true, 'Specialization is required'],
+      minlength: [3, 'Specialization can not be more than 3 characters'],
     },
     profileImg: { type: String, default: '' },
   },
@@ -54,4 +66,4 @@ const patientSchema = new Schema<TPatient, PatientModel>(
   }
 )
 
-export const Patient = model<TPatient, PatientModel>('Patient', patientSchema)
+export const Doctor = model<TDoctor, DoctorModel>('Doctor', doctorSchema)
