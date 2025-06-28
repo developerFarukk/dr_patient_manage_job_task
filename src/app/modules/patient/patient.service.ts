@@ -12,8 +12,9 @@ const patientId = patient?.user
 
 
 const patientApoinmentQuery = new QueryBuilder(
-    Appointment.find({patient: patientId}),
-    // .populate('doctor'),
+    Appointment.find({patient: patientId})
+    // .populate('doctor')
+    .populate('service'),
     query
   )
     .search(ApoinmentSearchableFields)
