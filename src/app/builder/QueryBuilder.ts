@@ -55,7 +55,7 @@ class QueryBuilder<T> {
   // Pagination functionality
   paginate() {
     const page = Number(this?.query?.page) || 1
-    const limit = Number(this?.query?.limit) || 6
+    const limit = Number(this?.query?.limit) || 10
     const skip = (page - 1) * limit
 
     this.modelQuery = this.modelQuery.skip(skip).limit(limit)
@@ -80,7 +80,7 @@ class QueryBuilder<T> {
       isDeleted: { $ne: true },
     })
     const page = Number(this?.query?.page) || 1
-    const limit = Number(this?.query?.limit) || 6
+    const limit = Number(this?.query?.limit) || 10
     const totalPage = Math.ceil(total / limit)
 
     return {
