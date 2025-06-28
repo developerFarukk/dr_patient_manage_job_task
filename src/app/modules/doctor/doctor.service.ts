@@ -6,6 +6,8 @@ import { User } from '../user/user.model'
 import { Service } from '../doctor-service/doctor-service.model'
 import QueryBuilder from '../../builder/QueryBuilder'
 import { ServiceSearchableFields } from './doctor.constant'
+import { TAvailability } from '../availability/availability.interface'
+import { Availability } from '../availability/availability.model'
 
 // CREATE DOCTOR SERVICE
 const createDoctorServiceIntoDB = async (
@@ -32,6 +34,36 @@ const createDoctorServiceIntoDB = async (
   }
 
   return service
+}
+
+
+// Create Avilebility
+const setAvailabilityIntoDB = async (
+  userEmail: string,
+  payload: TAvailability
+) => {
+  
+  // Check User exixtse
+  const user = await User.isUserExistsById(userEmail)
+  const doctorId = user?._id
+
+  if (!doctorId) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This Doctor id is not found !!!')
+  }
+
+  // Check if the service belongs to the doctor
+   const serviceExists = await Service.findById(payload?.service)
+
+  if (!serviceExists) {
+    throw new AppError(httpStatus.FORBIDDEN, 'Service does not belong to you')
+  }
+
+  const availability = await Availability.create({
+    ...payload,
+    doctor: doctorId,
+  })
+
+  return availability
 }
 
 // get all doctor service
@@ -90,4 +122,5 @@ export const DoctorServices = {
   getAllDoctorServiceFromDB,
   updateServiceIntoDB,
   deleteServiceFromDB,
+  setAvailabilityIntoDB
 }

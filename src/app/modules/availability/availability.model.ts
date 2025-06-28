@@ -1,7 +1,5 @@
-
-
-import { Schema, model } from 'mongoose';
-import { TAvailability } from './availability.interface';
+import { Schema, model } from 'mongoose'
+import { TAvailability } from './availability.interface'
 
 const availabilitySchema = new Schema<TAvailability>(
   {
@@ -17,7 +15,15 @@ const availabilitySchema = new Schema<TAvailability>(
     },
     day: {
       type: String,
-      enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      enum: [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+      ],
       required: true,
     },
     slots: [
@@ -25,6 +31,11 @@ const availabilitySchema = new Schema<TAvailability>(
         startTime: { type: String, required: true },
         endTime: { type: String, required: true },
         maxPatients: { type: Number, default: 1 },
+        _id: false,
+        isAvailable: {
+          type: Boolean,
+          default: true,
+        },
       },
     ],
     isAvailable: {
@@ -33,6 +44,9 @@ const availabilitySchema = new Schema<TAvailability>(
     },
   },
   { timestamps: true }
-);
+)
 
-export const Availability = model<TAvailability>('Availability', availabilitySchema);
+export const Availability = model<TAvailability>(
+  'Availability',
+  availabilitySchema
+)

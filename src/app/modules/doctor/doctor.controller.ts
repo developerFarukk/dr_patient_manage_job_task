@@ -8,6 +8,7 @@ import httpStatus from 'http-status'
 const createService = catchAsync(async (req, res) => {
   
   const { userEmail } = req.user;
+  
  
   const result = await DoctorServices.createDoctorServiceIntoDB(
     userEmail,
@@ -21,6 +22,23 @@ const createService = catchAsync(async (req, res) => {
     data: result,
   })
 })
+
+
+// Create Avilibity
+const setAvailability = catchAsync(async (req, res) => {
+  const { userEmail } = req.user;
+  const result = await DoctorServices.setAvailabilityIntoDB(
+    userEmail,
+    req.body
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: 'Availability set successfully',
+    data: result,
+  });
+});
 
 
 // all doctor Service data
@@ -74,5 +92,6 @@ export const DocorControllers = {
   createService,
   getAlleService,
   updateService,
-  deleteService
+  deleteService,
+  setAvailability
 }
