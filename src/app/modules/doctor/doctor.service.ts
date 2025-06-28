@@ -16,7 +16,9 @@ const createDoctorServiceIntoDB = async (
 ) => {
   // Check User exixtse
   const user = await User.isUserExistsById(userEmail)
+  
   const userId = user?._id
+  
 
   if (!userId) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user id is not found !!!')

@@ -18,6 +18,21 @@ const getAllDoctors = catchAsync(async (req, res) => {
 })
 
 
+// Single doctor Service data
+const getSingleDoctors = catchAsync(async (req, res) => {
+    const { id } = req.params
+  const result = await UserServices.getSingleDoctorIdIntoDB(id)
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Single doctor data get succesfully',
+    data: result,
+  })
+})
+
+
 export const UserControllers = {
   getAllDoctors,
+  getSingleDoctors
 }

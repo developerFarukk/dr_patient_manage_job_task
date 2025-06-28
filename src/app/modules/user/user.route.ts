@@ -15,4 +15,12 @@ router.get(
 )
 
 
+// Single Doctor get Route
+router.get(
+  '/:id',
+//   auth(USER_ROLE.admin, USER_ROLE.doctor),
+  UserControllers.getSingleDoctors
+)
+
+
 export const userRoutes = router
