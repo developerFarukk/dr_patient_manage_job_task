@@ -23,6 +23,39 @@ const createService = catchAsync(async (req, res) => {
 })
 
 
+// all doctor Service data
+const getAlleService = catchAsync(async (req, res) => {
+  
+ 
+  const result = await DoctorServices.getAllDoctorServiceFromDB( req.query  )
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Service all data get succesfully',
+    data: result,
+  })
+})
+
+
+// Update doctor Service data
+const updateService = catchAsync(async (req, res) => {
+  
+ const { id } = req.params;
+ 
+  const result = await DoctorServices.updateServiceIntoDB( id, req.body  )
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Update Service  succesfully',
+    data: result,
+  })
+})
+
+
 export const DocorControllers = {
   createService,
+  getAlleService,
+  updateService
 }

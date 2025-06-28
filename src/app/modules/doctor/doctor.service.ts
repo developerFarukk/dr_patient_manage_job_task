@@ -5,6 +5,7 @@ import httpStatus from 'http-status'
 import { User } from '../user/user.model'
 import { Service } from '../doctor-service/doctor-service.model'
 import QueryBuilder from '../../builder/QueryBuilder'
+import { ServiceSearchableFields } from './doctor.constant'
 
 // CREATE DOCTOR SERVICE
 const createDoctorServiceIntoDB = async (
@@ -35,9 +36,12 @@ const createDoctorServiceIntoDB = async (
 
 // get all doctor service
 const getAllDoctorServiceFromDB = async (query: Record<string, unknown>) => {
-
-  const doctorServiceQuery = new QueryBuilder(Bicycle.find(), query)
-    .search(BicycleSearchableFields)
+  const doctorServiceQuery = new QueryBuilder(
+    Service.find(),
+      // .populate('doctor'),
+    query
+  )
+    .search(ServiceSearchableFields)
     .filter()
     .sort()
     .paginate()
@@ -52,7 +56,27 @@ const getAllDoctorServiceFromDB = async (query: Record<string, unknown>) => {
   }
 }
 
+
+// Update Service Data
+const updateServiceIntoDB = async (
+    id: string,
+    payload: Partial<TService>,
+) => {
+  
+    const result = await Service.findOneAndUpdate(
+        { _id: id },
+        payload,
+        {
+            new: true,
+        },
+    );
+    
+    return result;
+};
+
+
 export const DoctorServices = {
   createDoctorServiceIntoDB,
-  getAllDoctorServiceFromDB
+  getAllDoctorServiceFromDB,
+  updateServiceIntoDB
 }
