@@ -1,6 +1,5 @@
 import AppError from '../../errors/AppError'
 import { TService } from '../doctor-service/doctor-service.interface'
-// import { Service } from "../doctor-service/doctor-service.model"
 import httpStatus from 'http-status'
 import { User } from '../user/user.model'
 import { Service } from '../doctor-service/doctor-service.model'
@@ -39,33 +38,6 @@ const createDoctorServiceIntoDB = async (
 }
 
 // Create Avilebility
-// const setAvailabilityIntoDB = async (
-//   userEmail: string,
-//   payload: TAvailability
-// ) => {
-//   // Check User exixtse
-//   const user = await User.isUserExistsById(userEmail)
-//   const doctorId = user?._id
-
-//   if (!doctorId) {
-//     throw new AppError(httpStatus.NOT_FOUND, 'This Doctor id is not found !!!')
-//   }
-
-//   // Check if the service belongs to the doctor
-//   const serviceExists = await Service.findById(payload?.service)
-
-//   if (!serviceExists) {
-//     throw new AppError(httpStatus.FORBIDDEN, 'Service does not belong to you')
-//   }
-
-//   const availability = await Availability.create({
-//     ...payload,
-//     doctor: doctorId,
-//   })
-
-//   return availability
-// }
-
 const setAvailabilityIntoDB = async (
   userEmail: string,
   payload: TAvailability

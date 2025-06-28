@@ -1,5 +1,3 @@
-
-
 import { z } from 'zod'
 
 // Patient validation schema
@@ -26,15 +24,14 @@ export const createDoctorValidationSchema = z.object({
       specialization: z
         .string()
         .min(3, { message: 'Name must be at least 3 characters' }),
-      
+
       hospitalName: z
         .string()
         .min(3, { message: 'Name must be at least 3 characters' }),
-      
+
       hospitalFloor: z
         .string()
-        .min(3, { message: 'Name must be at least 3 characters' })
-      
+        .min(3, { message: 'Name must be at least 3 characters' }),
     }),
   }),
 })
