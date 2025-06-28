@@ -39,32 +39,86 @@ const createDoctorServiceIntoDB = async (
 }
 
 // Create Avilebility
+// const setAvailabilityIntoDB = async (
+//   userEmail: string,
+//   payload: TAvailability
+// ) => {
+//   // Check User exixtse
+//   const user = await User.isUserExistsById(userEmail)
+//   const doctorId = user?._id
+
+//   if (!doctorId) {
+//     throw new AppError(httpStatus.NOT_FOUND, 'This Doctor id is not found !!!')
+//   }
+
+//   // Check if the service belongs to the doctor
+//   const serviceExists = await Service.findById(payload?.service)
+
+//   if (!serviceExists) {
+//     throw new AppError(httpStatus.FORBIDDEN, 'Service does not belong to you')
+//   }
+
+//   const availability = await Availability.create({
+//     ...payload,
+//     doctor: doctorId,
+//   })
+
+//   return availability
+// }
+
 const setAvailabilityIntoDB = async (
   userEmail: string,
   payload: TAvailability
 ) => {
-  // Check User exixtse
-  const user = await User.isUserExistsById(userEmail)
-  const doctorId = user?._id
+  // Check User exists
+  const user = await User.isUserExistsById(userEmail);
+  const doctorId = user?._id;
 
   if (!doctorId) {
-    throw new AppError(httpStatus.NOT_FOUND, 'This Doctor id is not found !!!')
+    throw new AppError(httpStatus.NOT_FOUND, 'Doctor not found');
   }
 
   // Check if the service belongs to the doctor
-  const serviceExists = await Service.findById(payload?.service)
+  const serviceExists = await Service.findOne({
+    _id: payload.service,
+    doctor: doctorId,
+  });
 
   if (!serviceExists) {
-    throw new AppError(httpStatus.FORBIDDEN, 'Service does not belong to you')
+    throw new AppError(httpStatus.FORBIDDEN, 'Service does not belong to you');
+  }
+
+  // Check for overlapping slots on the same day
+  const existingSlots = await Availability.find({
+    doctor: doctorId,
+    day: payload.day,
+  });
+
+  const hasOverlap = existingSlots.some((availability) => {
+    return availability.slots.some((slot) => {
+      return payload.slots.some((newSlot) => {
+        return (
+          (new Date(`1970-01-01T${newSlot.startTime}`) < new Date(`1970-01-01T${slot.endTime}`)) &&
+          (new Date(`1970-01-01T${newSlot.endTime}`) > new Date(`1970-01-01T${slot.startTime}`))
+        );
+      });
+    });
+  });
+
+  if (hasOverlap) {
+    throw new AppError(
+      httpStatus.CONFLICT,
+      'You already have overlapping time slots for this day'
+    );
   }
 
   const availability = await Availability.create({
     ...payload,
     doctor: doctorId,
-  })
+  });
 
-  return availability
-}
+  return availability;
+};
 
 // get all doctor service
 const getAllDoctorServiceFromDB = async (query: Record<string, unknown>) => {

@@ -17,7 +17,6 @@ export type TAvailability = {
     startTime: string
     endTime: string
     maxPatients?: number
-    isAvailable?: boolean
   }[]
   isAvailable?: boolean
 }

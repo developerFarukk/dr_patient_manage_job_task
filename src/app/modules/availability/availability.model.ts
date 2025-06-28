@@ -31,11 +31,7 @@ const availabilitySchema = new Schema<TAvailability>(
         startTime: { type: String, required: true },
         endTime: { type: String, required: true },
         maxPatients: { type: Number, default: 1 },
-        _id: false,
-        isAvailable: {
-          type: Boolean,
-          default: true,
-        },
+        _id: false
       },
     ],
     isAvailable: {
