@@ -183,6 +183,8 @@ This project implements a secure and scalable REST API for managing medical appo
    CLOUDINARY_CLOUD_NAME="<CLOUDINARY_CLOUD_NAME>"
    CLOUDINARY_API_KEY="<CLOUDINARY_API_KEY>"
    CLOUDINARY_API_SECRET="<CLOUDINARY_API_SECRET>"
+   EMAIL="<sender Email>"
+   APP_PASSWORD="<sender email app password>"
    ```
 5. **Start the Server**
    ```bash
