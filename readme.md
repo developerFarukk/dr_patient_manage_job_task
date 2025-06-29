@@ -13,7 +13,7 @@ This project implements a secure and scalable REST API for managing medical appo
 - **User Roles**:
   - **Doctor**: Manage services, availability, and appointments
   - **Patient**: Browse doctors, view availability, book appointments
-  - **Admin**: Dashboard with system analytics
+  - **Admin**: Dashboard with system analytics.
 
 - **Appointment Workflow**:
   - **Patient requests** → Pending status
