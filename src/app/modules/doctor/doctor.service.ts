@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import AppError from '../../errors/AppError'
 import { TService } from '../doctor-service/doctor-service.interface'
 import httpStatus from 'http-status'
@@ -10,6 +11,9 @@ import { Availability } from '../availability/availability.model'
 import { Appointment } from '../appointment/appointment.model'
 import { ApoinmentSearchableFields } from '../appointment/appoinment.constant'
 import { TAppointment } from '../appointment/appointment.interface'
+import { Patient } from '../patient/patient.model'
+import emailSender from '../../utils/emailSender'
+import { Doctor } from './doctor.model'
 
 // CREATE DOCTOR SERVICE
 const createDoctorServiceIntoDB = async (
@@ -235,29 +239,94 @@ const updateAvailabilityIntoDB = async (
   return availability
 }
 
+
+// Update appointment status by doctor
 const updateAppointmentStatusIntoDB = async (
   id: string,
   userEmail: string,
   payload: Partial<TAppointment>
 ) => {
-  // Check User exixtse
+  
+
+  // Check User exists (Doctor)
   const user = await User.isUserExistsById(userEmail)
   const doctorId = user?._id
 
   if (!doctorId) {
-    throw new AppError(httpStatus.NOT_FOUND, 'This user id is not found !!!')
+    throw new AppError(httpStatus.NOT_FOUND, 'Doctor not found')
   }
 
+  // Update appointment with status
   const appointment = await Appointment.findOneAndUpdate(
     { _id: id, doctor: doctorId },
     payload,
     { new: true }
   )
 
+
+  // Get patient info
+  const patientInfo = await Patient.findOne({user: appointment?.patient})
+
+
+
+  if (!patientInfo || !patientInfo.user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Patient not found')
+  }
+
+  const patientEmail = patientInfo?.email
+  const patientName = patientInfo?.name
+
+
+  // Get doctor info
+  const doctorInfo = await Doctor.findOne({user: doctorId})
+  const doctorName = doctorInfo?.name
+
+  // Get service info
+  const serviceInfo = await Service.findById(appointment?.service)
+  
+
+  // Send email confirmation to patient
+  try {
+    const htmlContent = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #2d3748;">Appointment Status Updated on ${appointment?.status}</h2>
+        <p>Dear ${patientName},</p>
+        <p>Your appointment status with Dr. ${doctorName} has been updated: </p>
+        <div style="background: #f7fafc; padding: 16px; border-radius: 8px; margin: 16px 0;">
+          <p><strong>Service:</strong> ${serviceInfo?.title || 'N/A'}</p>
+          <p><strong>Date:</strong> ${appointment?.date.toDateString()}</p>
+          <p><strong>Time:</strong> ${appointment?.startTime} - ${appointment?.endTime}</p>
+          <p><strong>Status:</strong> ${appointment?.status}</p>
+        </div>
+        <p>Thank you for using our service!</p>
+    </div>
+    `
+
+    const textContent = `
+Appointment Status Updated on ${appointment?.status}
+Dear ${patientName},
+Your appointment status with Dr. ${doctorName} has been updated:
+Service: ${serviceInfo?.title || 'N/A'}
+Date: ${appointment?.date.toDateString()}
+Time: ${appointment?.startTime} - ${appointment?.endTime}
+Status: ${appointment?.status}
+Thank you for using our service!
+    `
+
+    await emailSender(
+      patientEmail,
+      'Your Appointment Status Updated',
+      textContent,
+      htmlContent
+    )
+  } catch (error) {
+    console.error('Failed to send status update email:', error)
+  }
+
   if (!appointment) {
     throw new AppError(
       httpStatus.NOT_FOUND,
-      'Apoinmet not found or unauthorized'
+      'Appointment not found or unauthorized'
     )
   }
 
