@@ -10,7 +10,12 @@ import httpStatus from 'http-status'
 const getAllDoctorFromDB = async (query: Record<string, unknown>) => {
   const doctorAllQuery = new QueryBuilder(
     Doctor.find(),
-    // .populate('doctor'),
+  //   .populate({
+  //   path: 'doctor',
+  //   model: 'User',
+  //   select: ' email status',
+  // }),
+
     query
   )
     .search(DoctorSearchableFields)

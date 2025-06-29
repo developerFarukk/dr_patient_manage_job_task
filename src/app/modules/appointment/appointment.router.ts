@@ -10,6 +10,7 @@ import { AppointmentValidation } from './appointment.validation';
 
 const router = express.Router();
 
+// Create apoinmet route
 router.post(
   '/',
   auth(USER_ROLE.patient),

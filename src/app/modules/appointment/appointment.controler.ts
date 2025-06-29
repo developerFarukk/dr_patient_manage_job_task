@@ -7,7 +7,7 @@ import sendResponse from '../../utils/sendResponse';
 import { ApoinmentServices } from './appointment.service';
 
 
-
+// Create apoinment
 const createAppointment = catchAsync(async (req: Request, res: Response) => {
 
     const { userEmail } = req.user

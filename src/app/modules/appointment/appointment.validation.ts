@@ -1,6 +1,7 @@
 
 import { z } from 'zod';
 
+// create apoinment validation schema
 export const createAppointmentSchema = z.object({
   body: z.object({
     doctor: z.string(),
