@@ -61,10 +61,12 @@ const getDoctorAvailability = catchAsync(async (req, res) => {
 
 // get doctor Apoinment
 const getAllDoctorsApoinment = catchAsync(async (req, res) => {
-
   const { userEmail } = req.user
 
-  const result = await DoctorServices.getDoctorAppointmentsIntoDB( userEmail, req.query)
+  const result = await DoctorServices.getDoctorAppointmentsIntoDB(
+    userEmail,
+    req.query
+  )
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -116,6 +118,25 @@ const updateAvailability = catchAsync(async (req, res) => {
   })
 })
 
+// Update apoinment
+const updateApoinment = catchAsync(async (req, res) => {
+  const { id } = req.params
+  const { userEmail } = req.user
+
+  const result = await DoctorServices.updateAppointmentStatusIntoDB(
+    id,
+    userEmail,
+    req.body
+  )
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Update apoinment status  succesfully',
+    data: result,
+  })
+})
+
 export const DocorControllers = {
   createService,
   getAlleService,
@@ -124,5 +145,6 @@ export const DocorControllers = {
   setAvailability,
   updateAvailability,
   getDoctorAvailability,
-  getAllDoctorsApoinment
+  getAllDoctorsApoinment,
+  updateApoinment,
 }

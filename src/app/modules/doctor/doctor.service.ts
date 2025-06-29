@@ -9,6 +9,7 @@ import { TAvailability } from '../availability/availability.interface'
 import { Availability } from '../availability/availability.model'
 import { Appointment } from '../appointment/appointment.model'
 import { ApoinmentSearchableFields } from '../appointment/appoinment.constant'
+import { TAppointment } from '../appointment/appointment.interface'
 
 // CREATE DOCTOR SERVICE
 const createDoctorServiceIntoDB = async (
@@ -156,10 +157,10 @@ const getDoctorAppointmentsIntoDB = async (
       .populate('service')
       // .populate('patient'),
       .populate({
-          path: 'patient',
-          model: 'User',
-          select: ' email status',
-        }),
+        path: 'patient',
+        model: 'User',
+        select: ' email status',
+      }),
 
     query
   )
@@ -234,6 +235,35 @@ const updateAvailabilityIntoDB = async (
   return availability
 }
 
+const updateAppointmentStatusIntoDB = async (
+  id: string,
+  userEmail: string,
+  payload: Partial<TAppointment>
+) => {
+  // Check User exixtse
+  const user = await User.isUserExistsById(userEmail)
+  const doctorId = user?._id
+
+  if (!doctorId) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This user id is not found !!!')
+  }
+
+  const appointment = await Appointment.findOneAndUpdate(
+    { _id: id, doctor: doctorId },
+    payload,
+    { new: true }
+  )
+
+  if (!appointment) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'Apoinmet not found or unauthorized'
+    )
+  }
+
+  return appointment
+}
+
 export const DoctorServices = {
   createDoctorServiceIntoDB,
   getAllDoctorServiceFromDB,
@@ -243,4 +273,5 @@ export const DoctorServices = {
   updateAvailabilityIntoDB,
   getDoctorAvailabilityFromDB,
   getDoctorAppointmentsIntoDB,
+  updateAppointmentStatusIntoDB,
 }

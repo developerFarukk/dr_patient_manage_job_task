@@ -62,4 +62,11 @@ router.patch(
   DocorControllers.updateAvailability
 )
 
+// Update apoinment status get Route
+router.patch(
+  '/appointments/:id',
+  auth(USER_ROLE.admin, USER_ROLE.doctor),
+  DocorControllers.updateApoinment
+)
+
 export const DoctorRoutes = router
