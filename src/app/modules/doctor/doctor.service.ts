@@ -7,6 +7,8 @@ import QueryBuilder from '../../builder/QueryBuilder'
 import { ServiceSearchableFields } from './doctor.constant'
 import { TAvailability } from '../availability/availability.interface'
 import { Availability } from '../availability/availability.model'
+import { Appointment } from '../appointment/appointment.model'
+import { ApoinmentSearchableFields } from '../appointment/appoinment.constant'
 
 // CREATE DOCTOR SERVICE
 const createDoctorServiceIntoDB = async (
@@ -15,9 +17,8 @@ const createDoctorServiceIntoDB = async (
 ) => {
   // Check User exixtse
   const user = await User.isUserExistsById(userEmail)
-  
+
   const userId = user?._id
-  
 
   if (!userId) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user id is not found !!!')
@@ -43,54 +44,56 @@ const setAvailabilityIntoDB = async (
   payload: TAvailability
 ) => {
   // Check User exists
-  const user = await User.isUserExistsById(userEmail);
-  const doctorId = user?._id;
+  const user = await User.isUserExistsById(userEmail)
+  const doctorId = user?._id
 
   if (!doctorId) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Doctor not found');
+    throw new AppError(httpStatus.NOT_FOUND, 'Doctor not found')
   }
 
   // Check if the service belongs to the doctor
   const serviceExists = await Service.findOne({
     _id: payload.service,
     doctor: doctorId,
-  });
+  })
 
   if (!serviceExists) {
-    throw new AppError(httpStatus.FORBIDDEN, 'Service does not belong to you');
+    throw new AppError(httpStatus.FORBIDDEN, 'Service does not belong to you')
   }
 
   // Check for overlapping slots on the same day
   const existingSlots = await Availability.find({
     doctor: doctorId,
     day: payload.day,
-  });
+  })
 
   const hasOverlap = existingSlots.some((availability) => {
     return availability.slots.some((slot) => {
       return payload.slots.some((newSlot) => {
         return (
-          (new Date(`1970-01-01T${newSlot.startTime}`) < new Date(`1970-01-01T${slot.endTime}`)) &&
-          (new Date(`1970-01-01T${newSlot.endTime}`) > new Date(`1970-01-01T${slot.startTime}`))
-        );
-      });
-    });
-  });
+          new Date(`1970-01-01T${newSlot.startTime}`) <
+            new Date(`1970-01-01T${slot.endTime}`) &&
+          new Date(`1970-01-01T${newSlot.endTime}`) >
+            new Date(`1970-01-01T${slot.startTime}`)
+        )
+      })
+    })
+  })
 
   if (hasOverlap) {
     throw new AppError(
       httpStatus.CONFLICT,
       'You already have overlapping time slots for this day'
-    );
+    )
   }
 
   const availability = await Availability.create({
     ...payload,
     doctor: doctorId,
-  });
+  })
 
-  return availability;
-};
+  return availability
+}
 
 // get all doctor service
 const getAllDoctorServiceFromDB = async (query: Record<string, unknown>) => {
@@ -133,6 +136,46 @@ const getDoctorAvailabilityFromDB = async (userEmail: string) => {
   }
 
   return availability
+}
+
+// get Apoinment by doctor
+const getDoctorAppointmentsIntoDB = async (
+  userEmail: string,
+  query: Record<string, unknown>
+) => {
+  // Check User exixtse
+  const user = await User.isUserExistsById(userEmail)
+  const doctorId = user?._id
+
+  if (!doctorId) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This doctor id is not found !!!')
+  }
+
+  const doctorApoinmentQuery = new QueryBuilder(
+    Appointment.find({ doctor: doctorId })
+      .populate('service')
+      // .populate('patient'),
+      .populate({
+          path: 'patient',
+          model: 'User',
+          select: ' email status',
+        }),
+
+    query
+  )
+    .search(ApoinmentSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields()
+
+  const meta = await doctorApoinmentQuery.countTotal()
+  const result = await doctorApoinmentQuery.modelQuery
+
+  return {
+    meta,
+    result,
+  }
 }
 
 // Delete Service Data
@@ -199,4 +242,5 @@ export const DoctorServices = {
   setAvailabilityIntoDB,
   updateAvailabilityIntoDB,
   getDoctorAvailabilityFromDB,
+  getDoctorAppointmentsIntoDB,
 }

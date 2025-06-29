@@ -10,7 +10,7 @@ const appointmentSchema = new Schema<TAppointment>(
     },
     patient: {
       type: Schema.Types.ObjectId,
-      ref: 'Patient',
+      ref: 'patient',
       required: true,
     },
     service: {
@@ -32,7 +32,7 @@ const appointmentSchema = new Schema<TAppointment>(
     },
     status: {
       type: String,
-      enum: ['pending', 'confirmed', 'cancelled', 'completed'],
+      enum: ['pending', 'accepted', 'cancelled', 'completed'],
       default: 'pending',
     },
   },

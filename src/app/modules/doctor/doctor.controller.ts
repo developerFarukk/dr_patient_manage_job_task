@@ -49,13 +49,27 @@ const getAlleService = catchAsync(async (req, res) => {
 const getDoctorAvailability = catchAsync(async (req, res) => {
   const { userEmail } = req.user
 
-  const result =
-    await DoctorServices.getDoctorAvailabilityFromDB(userEmail)
+  const result = await DoctorServices.getDoctorAvailabilityFromDB(userEmail)
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Availability retrieved successfully',
+    data: result,
+  })
+})
+
+// get doctor Apoinment
+const getAllDoctorsApoinment = catchAsync(async (req, res) => {
+
+  const { userEmail } = req.user
+
+  const result = await DoctorServices.getDoctorAppointmentsIntoDB( userEmail, req.query)
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'All Apoinment data get succesfully',
     data: result,
   })
 })
@@ -110,4 +124,5 @@ export const DocorControllers = {
   setAvailability,
   updateAvailability,
   getDoctorAvailability,
+  getAllDoctorsApoinment
 }

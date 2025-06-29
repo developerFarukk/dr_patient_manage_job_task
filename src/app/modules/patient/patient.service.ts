@@ -1,6 +1,6 @@
 import QueryBuilder from "../../builder/QueryBuilder";
+import { ApoinmentSearchableFields } from "../appointment/appoinment.constant";
 import { Appointment } from "../appointment/appointment.model";
-import { ApoinmentSearchableFields } from "./patient.const";
 import { Patient } from "./patient.model";
 
 

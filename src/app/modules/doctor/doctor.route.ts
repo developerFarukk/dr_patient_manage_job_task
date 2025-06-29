@@ -34,6 +34,13 @@ router.get(
   DocorControllers.getDoctorAvailability
 )
 
+// View all doctor appointment
+router.get(
+  '/appointments',
+  auth(USER_ROLE.doctor, USER_ROLE.admin),
+  DocorControllers.getAllDoctorsApoinment
+);
+
 // delete service get Route
 router.delete(
   '/services/:id',

@@ -2,7 +2,7 @@ import { Document, Types } from 'mongoose'
 
 export type TAppointmentStatus =
   | 'pending'
-  | 'confirmed'
+  | 'accepted'
   | 'cancelled'
   | 'completed'
 
