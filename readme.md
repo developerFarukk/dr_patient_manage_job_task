@@ -5,6 +5,7 @@
 This project implements a secure and scalable REST API for managing medical appointments between doctors and patients. Built with Node.js, Express, and TypeScript, it leverages MongoDB for data persistence and follows a modular architecture for maintainability.
 
 **Server Live Link** ➡️ [https://dr-patient-management.vercel.app](https://dr-patient-management.vercel.app)
+**Api Test Link** ➡️ [https://dr-patient-management.vercel.app/api/v1](https://dr-patient-management.vercel.app/api/v1)
 **Use Postman Collection Link** ➡️ [https://web.postman.co/workspace/7bd068cd-caf2-4c8d-9b36-756b3dbe8ce5](https://web.postman.co/workspace/7bd068cd-caf2-4c8d-9b36-756b3dbe8ce5)
 
 ## Features
@@ -194,5 +195,5 @@ This project implements a secure and scalable REST API for managing medical appo
 - **Database**: Ensure MongoDB is globaly installed and running locally.
 
 📬 **Contact**  
-For issues or inquiries, reach out to [OMAR FARUK](mailto:web.omarfaruk.dev@gmail.com). Thank you 💜
+For issues or inquiries, reach out to [DEVELOPER FARUK](mailto:web.omarfaruk.dev@gmail.com). Thank you 💜
 
