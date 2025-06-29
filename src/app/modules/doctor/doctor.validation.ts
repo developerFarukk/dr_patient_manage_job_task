@@ -36,6 +36,17 @@ export const createDoctorValidationSchema = z.object({
   }),
 })
 
+
+const apoinmentStatusrValidationSchema = z.object({
+  body: z.object({
+    status: z.enum(['accepted', 'cancelled'], {
+      required_error: 'Status is required',
+      invalid_type_error: 'Status must be either "accepted" or "cancelled"',
+    }),
+  }),
+})
+
 export const doctorValidation = {
   createDoctorValidationSchema,
+  apoinmentStatusrValidationSchema,
 }

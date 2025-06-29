@@ -4,6 +4,7 @@ import { doctorServiceValidationSchema } from '../doctor-service/doctor-service.
 import { DocorControllers } from './doctor.controller'
 import { USER_ROLE } from '../user/user.constant'
 import auth from '../../middlewares/auth'
+import { doctorValidation } from './doctor.validation'
 
 
 const router = express.Router()
@@ -64,8 +65,9 @@ router.patch(
 
 // Update apoinment status get Route
 router.patch(
-  '/appointments/:id',
+  '/appointments/:id/status',
   auth(USER_ROLE.admin, USER_ROLE.doctor),
+  validateRequest(doctorValidation.apoinmentStatusrValidationSchema),
   DocorControllers.updateApoinment
 )
 
